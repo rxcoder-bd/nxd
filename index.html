@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NX Downloader — Powered by Nxona LLC</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Animated Mesh Gradient -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+
+  <!-- Header / Navigation -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo">
+        <span class="logo-accent">NX</span> Downloader
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+      </nav>
+
+      <div class="nav-actions">
+        <!-- Theme Toggle Button -->
+        <button id="themeToggleBtn" class="glass-btn icon-btn" aria-label="Toggle Theme">
+          <!-- Sun Icon -->
+          <svg id="sunIcon" class="hero-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon Icon -->
+          <svg id="moonIcon" class="hero-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+        <!-- Mobile Menu Hamburger -->
+        <button id="mobileMenuBtn" class="glass-btn icon-btn mobile-only" aria-label="Open Navigation">
+          <svg class="hero-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <span class="badge">Powered by Nxona LLC</span>
+          <h1 class="hero-title">Download Videos <span class="text-gradient">Easily</span></h1>
+          <p class="hero-subtitle">
+            Paste a YouTube URL to resolve video details and instantly retrieve available download formats.
+          </p>
+
+          <!-- Main Downloader Card -->
+          <div class="glass-card downloader-card">
+            <form id="downloadForm" class="downloader-form" onsubmit="event.preventDefault();">
+              <div class="input-wrapper">
+                <!-- Link Icon -->
+                <svg class="input-icon hero-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                </svg>
+
+                <input 
+                  type="text" 
+                  id="videoUrlInput" 
+                  placeholder="Paste YouTube URL here..." 
+                  autocomplete="off"
+                  spellcheck="false"
+                >
+
+                <!-- Clear Button -->
+                <button type="button" id="clearBtn" class="input-action-btn hidden" title="Clear input">
+                  <svg class="hero-icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+
+                <!-- Paste Button -->
+                <button type="button" id="pasteBtn" class="glass-btn-inline" title="Paste from clipboard">
+                  <svg class="hero-icon-sm" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                  </svg>
+                  <span>Paste</span>
+                </button>
+              </div>
+
+              <button type="submit" id="submitBtn" class="primary-btn">
+                <span id="btnText">Download</span>
+                <span id="btnSpinner" class="spinner hidden"></span>
+              </button>
+            </form>
+
+            <div class="platform-chips">
+              <span class="chip active">
+                <span class="status-dot green"></span> YouTube (Active)
+              </span>
+              <span class="chip disabled">Facebook (Planned)</span>
+              <span class="chip disabled">TikTok (Planned)</span>
+            </div>
+          </div>
+
+          <!-- Result Container (Dynamically Inserted) -->
+          <div id="resultContainer" class="result-wrapper hidden"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>Core Features</h2>
+          <p>Everything you need for seamless video resolution.</p>
+        </div>
+
+        <div class="grid grid-3">
+          <div class="glass-card feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3>Fast Interface</h3>
+            <p>Simple and lightweight video resolving workflow designed for speed.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">💎</div>
+            <h3>Liquid Glass UI</h3>
+            <p>Modern, translucent aesthetic crafted with smooth blur effects and clean lines.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">📱</div>
+            <h3>Fully Responsive</h3>
+            <p>Seamless experience optimized across mobile, tablet, and desktop displays.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3>Easy to Use</h3>
+            <p>Paste a video link and instantly inspect resolution choices.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🌐</div>
+            <h3>Multi-Platform Ready</h3>
+            <p>Built with modular architecture prepared for expanded platform support.</p>
+          </div>
+          <div class="glass-card feature-card">
+            <div class="feature-icon">🔒</div>
+            <h3>Safe & Direct</h3>
+            <p>No backend database logging or tracking of your queries.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>How It Works</h2>
+          <p>Download your favorite content in three simple steps.</p>
+        </div>
+
+        <div class="grid grid-3 steps-grid">
+          <div class="glass-card step-card">
+            <div class="step-num">01</div>
+            <h3>Copy</h3>
+            <p>Copy the YouTube video URL from your browser address bar or app share button.</p>
+          </div>
+          <div class="glass-card step-card">
+            <div class="step-num">02</div>
+            <h3>Paste</h3>
+            <p>Paste the URL into the input field above and hit the Download button.</p>
+          </div>
+          <div class="glass-card step-card">
+            <div class="step-num">03</div>
+            <h3>Download</h3>
+            <p>Select your desired format and quality option to fetch your media file.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="section">
+      <div class="container small-container">
+        <div class="section-header">
+          <h2>Frequently Asked Questions</h2>
+          <p>Got questions? We've got answers.</p>
+        </div>
+
+        <div class="accordion">
+          <details class="glass-card faq-item">
+            <summary>What is NX Downloader?</summary>
+            <p>NX Downloader is a modern web application designed to resolve media streams and details from YouTube links directly inside your browser.</p>
+          </details>
+
+          <details class="glass-card faq-item">
+            <summary>How do I download a video?</summary>
+            <p>Simply paste a YouTube video link into the box above, click "Download", select your target format/quality, and trigger the download link.</p>
+          </details>
+
+          <details class="glass-card faq-item">
+            <summary>Which platforms are currently supported?</summary>
+            <p>Currently, YouTube links are fully supported. Additional platform integrations are planned for future releases.</p>
+          </details>
+
+          <details class="glass-card faq-item">
+            <summary>Why couldn't my video be resolved?</summary>
+            <p>This can occur if the link is invalid, private, age-restricted, region-blocked, or if the public endpoint experiences temporary network rate limits.</p>
+          </details>
+
+          <details class="glass-card faq-item">
+            <summary>Can I use NX Downloader on mobile?</summary>
+            <p>Yes, NX Downloader features a fully responsive Liquid Glass UI optimized for smartphones and tablets.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-brand">
+        <p class="brand-title">NX Downloader</p>
+        <p class="sub-text">Powered by <strong>Nxona LLC</strong></p>
+        <p class="dev-text">Dev by <code>Rx Coder &lt;/&gt;</code></p>
+      </div>
+
+      <div class="footer-notice">
+        <p>Please respect copyright laws and platform policies when resolving online media.</p>
+      </div>
+
+      <p class="copyright">&copy; 2026 Nxona LLC. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
