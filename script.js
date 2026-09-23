@@ -22,10 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultContainer = document.getElementById('resultContainer');
   const toastContainer = document.getElementById('toastContainer');
 
-  // --- API Endpoint ---
-  const BASE_API_URL = 'https://yt-link-vid-resolve.vercel.app/api/video/open';
+  // UPDATED: Point to your deployed Vercel proxy endpoint URL
+  // Example format: 'https://nx-downloader-api.vercel.app/api/resolve'
+  const PROXY_API_URL = 'https://YOUR_VERCEL_APP_NAME.vercel.app/api/resolve';
 
-  // State Management
   let isResolving = false;
 
   // ==========================================
@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   themeToggleBtn.addEventListener('click', toggleTheme);
 
-  // Mobile Navigation Toggle
   mobileMenuBtn.addEventListener('click', () => {
     navLinks.classList.toggle('open');
   });
@@ -138,19 +137,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ==========================================
-  // 4. URL Validation Logic
+  // 4. Validation & Helpers
   // ==========================================
   function validateYouTubeUrl(url) {
     if (!url || typeof url !== 'string') return false;
     const trimmed = url.trim();
-    if (!trimmed) return false;
-
-    // Standard YouTube URL Patterns
     const ytPattern = /^(https?:\/\/)?(www\.)?(youtube\.com\/(watch\?v=|shorts\/|embed\/)|youtu\.be\/)[a-zA-Z0-9_-]{11}/;
     return ytPattern.test(trimmed);
   }
 
-  // Escape HTML helper
   function escapeHtml(str) {
     if (!str) return '';
     return String(str)
@@ -161,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/'/g, '&#039;');
   }
 
-  // Format Duration Helper (Seconds -> MM:SS)
   function formatDuration(seconds) {
     if (!seconds || isNaN(seconds)) return '';
     const secs = parseInt(seconds, 10);
@@ -171,27 +165,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 5. API Fetch Logic
+  // 5. Proxy API Request Logic
   // ==========================================
   async function resolveVideo(url) {
-    const encodedUrl = encodeURIComponent(url);
-    const targetEndpoint = `${BASE_API_URL}?url=${encodedUrl}`;
+    const targetEndpoint = `${PROXY_API_URL}?url=${encodeURIComponent(url)}`;
 
     const response = await fetch(targetEndpoint, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
+      headers: { 'Accept': 'application/json' }
     });
 
     if (!response.ok) {
-      throw new Error(`API returned HTTP status ${response.status}`);
+      throw new Error(`Proxy status: ${response.status}`);
     }
 
     return await response.json();
   }
 
-  // Form Submit Listener
   downloadForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isResolving) return;
@@ -213,23 +203,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       const data = await resolveVideo(inputUrl);
-      
-      if (!data || data.error || (data.status && data.status === 'error')) {
-        const errorMsg = data?.message || data?.error || 'Unable to resolve this video. Please try again.';
+
+      if (!data || data.error || data.status === 'error') {
+        const errorMsg = data?.message || data?.error || 'Unable to resolve this video.';
         showToast(errorMsg, 'error');
       } else {
         showToast('Video resolved successfully!', 'success');
         renderResult(data);
       }
     } catch (err) {
-      console.error('Resolve Error:', err);
-      showToast('Unable to connect to the server. Please try again.', 'error');
+      console.error('Fetch Error:', err);
+      showToast('Unable to connect to proxy service. Please try again.', 'error');
     } finally {
       setLoadingState(false);
     }
   });
 
-  // Loading State Helper
   function setLoadingState(loading) {
     isResolving = loading;
     if (loading) {
@@ -249,16 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // 6. Response Mapping & Rendering
+  // 6. Result Renderer
   // ==========================================
   function renderResult(data) {
-    // Dynamic Mapping based on response fields
     const title = data.title || data.videoTitle || data.heading || 'Resolved Video';
     const thumbnail = data.thumbnail || data.thumb || data.image || '';
     const rawDuration = data.duration || data.lengthSeconds || '';
     const formattedDuration = formatDuration(rawDuration) || rawDuration;
 
-    // Detect format/stream arrays or direct download links
     let streams = [];
     if (Array.isArray(data.formats)) {
       streams = data.formats;
@@ -274,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }];
     }
 
-    // Build Formats Options
     let formatOptionsHtml = '';
     if (streams.length > 0) {
       streams.forEach((item, index) => {
@@ -318,7 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           ` : `
             <p style="color: var(--toast-warning); font-size: 0.9rem; margin-bottom: 1rem;">
-              No direct downloadable stream URLs were exposed by the API response.
+              No direct stream links returned in the API payload.
             </p>
             <button id="resetCardBtn" class="reset-btn">Try Another URL</button>
           `}
@@ -329,7 +315,6 @@ document.addEventListener('DOMContentLoaded', () => {
     resultContainer.innerHTML = cardHtml;
     resultContainer.classList.remove('hidden');
 
-    // Attach Event Handlers for Download Action
     const triggerDownloadBtn = document.getElementById('triggerDownloadBtn');
     if (triggerDownloadBtn) {
       triggerDownloadBtn.addEventListener('click', () => {
@@ -341,7 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
           return;
         }
 
-        // Trigger Direct Download or External Open
         showToast('Initiating download action...', 'info');
         window.open(downloadTargetUrl, '_blank', 'noopener,noreferrer');
       });
@@ -358,6 +342,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Initialize Default Theme State
   initTheme();
 });
